@@ -8,13 +8,6 @@ let g:g_copyright = "Inc. All Rights Reserved"
 " your file description when you create a new file.
 let g:g_description = ""
 
-" 开启文件类型侦测
-filetype on
-" 根据侦测到的不同类型加载对应的插件
-filetype plugin on
- 
-" 自动缩进
-filetype indent on
 " 开启语法高亮功能
 syntax enable
 " 允许用指定语法高亮配色方案替换默认方案
@@ -32,7 +25,7 @@ set number "显示行号
 set hlsearch "高亮显示搜索结果
 " set nowrap "禁止折行
 set backspace=2 "回退键生效
-"set backspace=indent,eol,start
+set backspace=indent,eol,start
 set novisualbell
 " 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
 set mouse=a
@@ -86,8 +79,12 @@ Plugin 'dyng/ctrlsf.vim'   "全局搜索
 Plugin 'vim-scripts/Conque-GDB' "gdb
 " 插件列表结束
 call vundle#end()
+" 开启文件类型侦测
 filetype on
-
+" 根据侦测到的不同类型加载对应的插件
+filetype plugin on
+"根据文件类型 自动缩进
+filetype indent on
 "设置主题颜色
 set t_Co=256
 set background=dark
