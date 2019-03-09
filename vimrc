@@ -1,6 +1,5 @@
-" ***************** 全局设置 ************** "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                   User-definded setting                    "
+" => User-definded setting                    "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:g_author = "zhangjunteng"
 let g:g_email = "deepvoice@163.com"
@@ -8,100 +7,811 @@ let g:g_copyright = "Inc. All Rights Reserved"
 " your file description when you create a new file.
 let g:g_description = ""
 
-" 开启语法高亮功能
-syntax enable
-" 允许用指定语法高亮配色方案替换默认方案
-syntax on
-set nocompatible "关闭兼容模式
-set incsearch "开启实时搜索功能
-"set ignorecase "搜索忽略大小写
-set wildmenu "vim命令自动补全
-set autoread "文件自动更新
-set laststatus=2 "总是显示状态栏
-set ruler "显示光标位置
-set number "显示行号
-"set cursorline "高亮显示当前行
-"set cursorcolumn "高亮显示当前列
-set hlsearch "高亮显示搜索结果
-" set nowrap "禁止折行
-set backspace=2 "回退键生效
-set backspace=indent,eol,start
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+Plugin 'scrooloose/nerdtree'
+Plugin 'majutsushi/tagbar'
+Plugin 'mileszs/ack.vim'
+Plugin 'vim-scripts/bufexplorer.zip'
+Plugin 'itchyny/lightline.vim'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'tpope/vim-commentary'
+Plugin 'michaeljsmith/vim-indent-object' "Defines a new text object representing lines of code at the same indent level. Useful for python/vim scripts
+Plugin 'Shougo/neocomplete.vim'
+
+" All of your Plugins must be added before the following line
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"plugins_config.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =>Ack
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
+""""""""""""""""""""""""""""""
+" => bufExplorer plugin
+""""""""""""""""""""""""""""""
+let g:bufExplorerDefaultHelp=0
+let g:bufExplorerShowRelativePath=1
+let g:bufExplorerFindActive=1
+let g:bufExplorerSortBy='name'
+map <leader>o :BufExplorer<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => lightline
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+try
+    let g:lightline = {
+        \ 'colorscheme': 'wombat',
+        \ }
+catch
+endtry
+
+set noshowmode
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => nerdtree
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <F1> :NERDTreeToggle<CR>
+" 圣诞节显示风格
+let NERDChristmasTree=1
+" 指定鼠标模式（1.双击打开；2.单目录双文件；3.单击打开）
+let NERDTreeMouseMode=2
+" 是否显示书签列表
+let NERDTreeShowBookmarks=0
+" 设置显示忽略文件
+let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$', '__pycache__']
+" 设置NERDTree子窗口宽度
+let NERDTreeWinSize=32
+" 设置NERDTree子窗口位置
+let NERDTreeWinPos="left"
+" 显示隐藏文件
+let NERDTreeShowHidden=1
+" NERDTree 子窗口中不显示冗余帮助信息
+let NERDTreeMinimalUI=1
+" 删除文件时自动删除文件对应 buffer
+let NERDTreeAutoDeleteBuffer=1
+
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vim-commentary
+" Comment stuff out. Use gcc to comment out a line (takes a count), gc to comment out the target of a motion. gcu uncomments a set of adjacent commented lines.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+autocmd FileType python,shell,coffee set commentstring=#\ %s
+autocmd FileType java,c,cpp set commentstring=//\ %s
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => tagbar
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"设置显示／隐藏标签列表子窗口的快捷键。
+nnoremap <F2> :TagbarToggle<CR>
+"设置 tagbar 子窗口的位置出现在主编辑区的右边
+let tagbar_right=1
+"设置标签子窗口的宽度
+let tagbar_width=32
+"tagbar 子窗口中不显示冗余帮助信息
+let g:tagbar_compact=1
+"设置 ctags 对哪些代码标识符生成标签
+"
+"
+"设置ctags快捷键，快速生成ctags文件，记得在根目录下调用
+nmap cg :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+"自动找到父路径的tags文件
+set tags=tags;/
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => neocomplete.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 3
+
+" Define dictionary.
+let g:neocomplete#sources#dictionary#dictionaries = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+        \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+  return (pumvisible() ? "\<C-y>" : "" ) . "\<CR>"
+  " For no inserting <CR> key.
+  "return pumvisible() ? "\<C-y>" : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+" Close popup by <Space>.
+"inoremap <expr><Space> pumvisible() ? "\<C-y>" : "\<Space>"
+
+" AutoComplPop like behavior.
+"let g:neocomplete#enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplete#enable_auto_select = 1
+"let g:neocomplete#disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
+
+" Enable omni completion.
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+  let g:neocomplete#sources#omni#input_patterns = {}
+endif
+"let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+"let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+"let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"basic.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Sections:
+"    -> General
+"    -> VIM user interface
+"    -> Colors and Fonts
+"    -> Files and backups
+"    -> Text, tab and indent related
+"    -> Visual mode related
+"    -> Moving around, tabs and buffers
+"    -> Status line
+"    -> Editing mappings
+"    -> vimgrep searching and cope displaying
+"    -> Spell checking
+"    -> Misc
+"    -> Helper functions
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Sets how many lines of history VIM has to remember
+set history=500
+
+
+" Set to auto read when a file is changed from the outside
+set autoread
+
+
+" Fast saving
+"nmap <leader>w :w!<cr>
+
+" :W sudo saves the file 
+" (useful for handling the permission-denied error)
+"command W w !sudo tee % > /dev/null
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => VIM user interface
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set 7 lines to the cursor - when moving vertically using j/k
+set so=7
+
+" Avoid garbled characters in Chinese language windows OS
+let $LANG='en' 
+set langmenu=en
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+" Turn on the Wild menu
+set wildmenu
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
+if has("win16") || has("win32")
+    set wildignore+=.git\*,.hg\*,.svn\*
+else
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
+endif
+
+"Always show current position
+set ruler
+
+" Height of the command bar
+set cmdheight=2
+
+" A buffer becomes hidden when it is abandoned
+set hid
+
+" Configure backspace so it acts as it should act
+set backspace=eol,start,indent
+set whichwrap+=<,>,h,l
+
+" Ignore case when searching
+"set ignorecase
+
+" When searching try to be smart about cases 
+set smartcase
+
+" Highlight search results
+set hlsearch
+
+" Makes search act like search in modern browsers
+set incsearch 
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw 
+
+" For regular expressions turn magic on
+set magic
+
+" Show matching brackets when text indicator is over them
+set showmatch 
+" How many tenths of a second to blink when matching brackets
+set mat=2
+
+" No annoying sound on errors
+set noerrorbells
 set novisualbell
-" 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
-set mouse=a
-" 禁止显示滚动条
-set guioptions-=l
-set guioptions-=L
+set t_vb=
+set tm=500
+
+" Properly disable sound on errors on MacVim
+if has("gui_macvim")
+    autocmd GUIEnter * set vb t_vb=
+endif
+
+
+" Add a bit extra margin to the left
+set foldcolumn=1
+
+" Disable scrollbars (real hackers don't use scrollbars for navigation!)
 set guioptions-=r
 set guioptions-=R
-" 禁止显示菜单和工具条
-set guioptions-=m
-set guioptions-=T
- 
-" 将制表符扩展为空格
-set expandtab
-" 设置编辑时制表符占用空格数
-set tabstop=4
-" 设置格式化时制表符占用空格数
-set shiftwidth=4
-" 让 vim 把连续数量的空格视为一个制表符
-set softtabstop=4
-" 基于缩进或语法进行代码折叠
-set foldmethod=syntax
-" 启动 vim 时关闭折叠代码
-set nofoldenable
-"设置编码
+set guioptions-=l
+set guioptions-=L
+
+
+"显示行号
+set number
+
+"高亮显示当前行
+"set cursorline
+
+"高亮显示当前列
+"set cursorcolumn
+
+"禁止折行
+"set nowrap
+
+"可以在buffer的任何地方使用鼠标
+set mouse=a
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Colors and Fonts
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable syntax highlighting
+syntax enable 
+set background=dark
+
+" Enable 256 colors palette in Gnome Terminal
+if $COLORTERM == 'gnome-terminal'
+    set t_Co=256
+endif
+
+let g:solarized_termcolors=256
+
+try
+    colorscheme desert
+    colorscheme peaksea
+"    colorscheme wombat256mod
+catch
+endtry
+
+" Set extra options when running in GUI mode
+if has("gui_running")
+    set guioptions-=T
+    set guioptions-=e
+    set t_Co=256
+    set guitablabel=%M\ %t
+endif
+
+" Set utf8 as standard encoding and en_US as the standard language
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=utf-8,gb18030,gbk,gb2312
 set fileencoding=utf-8
-"设置paste快捷键
-:set pastetoggle=<F12>
-" *************** 设置全局快捷键 *****************
- 
-" 定义快捷键的前缀，即<Leader>
-let mapleader=";"
-" ************** 插件管理与设置 ************ "
- 
-" vundle 环境设置
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-" vundle 管理的插件列表必须位于 vundle#begin() 和 vundle#end() 之间
-call vundle#begin()
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'tomasr/molokai' "主题
-Plugin 'Lokaltog/vim-powerline' "status 美化
-Plugin 'octol/vim-cpp-enhanced-highlight' "对c++语法高亮增强
-Plugin 'majutsushi/tagbar' "taglist的增强版，查看标签，依赖于ctags
-Plugin 'scrooloose/nerdtree' "文件浏览
-Plugin 'neocomplcache'  "自动补全
-Plugin 'dyng/ctrlsf.vim'   "全局搜索
-Plugin 'vim-scripts/Conque-GDB' "gdb
-" 插件列表结束
-call vundle#end()
-" 开启文件类型侦测
-filetype on
-" 根据侦测到的不同类型加载对应的插件
-filetype plugin on
-"根据文件类型 自动缩进
-filetype indent on
-"设置主题颜色
-set t_Co=256
-set background=dark
-colorscheme desert
-"colorscheme molokai
 
-" Powerline 设置
-"" 启用缓存，加快运行速度
-let g:Powerline_cache_enabled = 1
-"" 设置状态栏分隔符
-let g:Powerline_symbols = 'fancy'
-"let Powerline_symbols = 'compatible'
-let g:Powerline_symbols = 'unicode'
-"设置状态栏的主题
-let g:Powerline_colorscheme = 'solarized256_dark'
-"" 设置状态栏显示文件的绝对路径（全路径）
-"let g:Powerline_stl_path_style = 'full'
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git et.c anyway...
+"set nobackup
+"set nowb
+"set noswapfile
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use spaces instead of tabs
+set expandtab
+
+" Be smart when using tabs ;)
+set smarttab
+
+" 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+
+" Linebreak on 500 characters
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+
+""""""""""""""""""""""""""""""
+" => Visual mode related
+""""""""""""""""""""""""""""""
+" Visual mode pressing * or # searches for the current selection
+" Super useful! From an idea by Michael Naumann
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Moving around, tabs, windows and buffers
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
+"map <space> /
+"map <c-space> ?
+
+" Disable highlight when <leader><cr> is pressed
+"map <silent> <leader><cr> :noh<cr>
+
+" Smart way to move between windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Close the current buffer
+map <leader>bd :Bclose<cr>:tabclose<cr>gT
+
+" Close all the buffers
+map <leader>ba :bufdo bd<cr>
+
+map <leader>l :bnext<cr>
+map <leader>h :bprevious<cr>
+
+" Useful mappings for managing tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove 
+map <leader>t<leader> :tabnext 
+
+" Let 'tl' toggle between this and the last accessed tab
+let g:lasttab = 1
+nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
+au TabLeave * let g:lasttab = tabpagenr()
+
+
+" Opens a new tab with the current buffer's path
+" Super useful when editing files in the same directory
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+
+" Switch CWD to the directory of the open buffer
+map <leader>cd :cd %:p:h<cr>:pwd<cr>
+
+" Specify the behavior when switching between buffers 
+try
+  set switchbuf=useopen,usetab,newtab
+  set stal=2
+catch
+endtry
+
+" Return to last edit position when opening files (You want this!)
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+
+""""""""""""""""""""""""""""""
+" => Status line
+""""""""""""""""""""""""""""""
+" Always show the status line
+set laststatus=2
+
+" Format the status line
+set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Editing mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remap VIM 0 to first non-blank character
+map 0 ^
+
+" Move a line of text using ALT+[jk] or Command+[jk] on mac
+nmap <M-j> mz:m+<cr>`z
+nmap <M-k> mz:m-2<cr>`z
+vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
+vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+if has("mac") || has("macunix")
+  nmap <D-j> <M-j>
+  nmap <D-k> <M-k>
+  vmap <D-j> <M-j>
+  vmap <D-k> <M-k>
+endif
+
+" Delete trailing white space on save, useful for some filetypes ;)
+fun! CleanExtraSpaces()
+    let save_cursor = getpos(".")
+    let old_query = getreg('/')
+    silent! %s/\s\+$//e
+    call setpos('.', save_cursor)
+    call setreg('/', old_query)
+endfun
+
+if has("autocmd")
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee :call CleanExtraSpaces()
+endif
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Spell checking
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Pressing ,ss will toggle and untoggle spell checking
+map <leader>ss :setlocal spell!<cr>
+
+" Shortcuts using <leader>
+map <leader>sn ]s
+map <leader>sp [s
+map <leader>sa zg
+map <leader>s? z=
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Misc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Remove the Windows ^M - when the encodings gets messed up
+noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+" Quickly open a buffer for scribble
+map <leader>q :e ~/buffer<cr>
+
+" Quickly open a markdown buffer for scribble
+map <leader>x :e ~/buffer.md<cr>
+
+" Toggle paste mode on and off
+map <leader>pp :setlocal paste!<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Returns true if paste mode is enabled
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    endif
+    return ''
+endfunction
+
+" Don't close window, when deleting a buffer
+command! Bclose call <SID>BufcloseCloseIt()
+function! <SID>BufcloseCloseIt()
+    let l:currentBufNum = bufnr("%")
+    let l:alternateBufNum = bufnr("#")
+
+    if buflisted(l:alternateBufNum)
+        buffer #
+    else
+        bnext
+    endif
+
+    if bufnr("%") == l:currentBufNum
+        new
+    endif
+
+    if buflisted(l:currentBufNum)
+        execute("bdelete! ".l:currentBufNum)
+    endif
+endfunction
+
+function! CmdLine(str)
+    call feedkeys(":" . a:str)
+endfunction 
+
+function! VisualSelection(direction, extra_filter) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", "\\/.*'$^~[]")
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    if a:direction == 'gv'
+        call CmdLine("Ack '" . l:pattern . "' " )
+    elseif a:direction == 'replace'
+        call CmdLine("%s" . '/'. l:pattern . '/')
+    endif
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"extended.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GUI related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set font according to system
+if has("mac") || has("macunix")
+    set gfn=IBM\ Plex\ Mono:h14,Hack:h14,Source\ Code\ Pro:h15,Menlo:h15
+elseif has("win16") || has("win32")
+    set gfn=IBM\ Plex\ Mono:h14,Source\ Code\ Pro:h12,Bitstream\ Vera\ Sans\ Mono:h11
+elseif has("gui_gtk2")
+    set gfn=IBM\ Plex\ Mono:h14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("linux")
+    set gfn=IBM\ Plex\ Mono:h14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("unix")
+    set gfn=Monospace\ 11
+endif
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Fast editing and reloading of vimrc configs
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"map <leader>e :e! ~/.vim_runtime/my_configs.vim<cr>
+"autocmd! bufwritepost ~/.vim_runtime/my_configs.vim source ~/.vim_runtime/my_configs.vim
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Turn persistent undo on
+"    means that you can undo even when you close a buffer/VIM
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"try
+"    set undodir=~/.vim_runtime/temp_dirs/undodir
+"    set undofile
+"catch
+"endtry
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Command mode related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Smart mappings on the command line
+cno $h e ~/
+cno $d e ~/Desktop/
+cno $j e ./
+cno $c e <C-\>eCurrentFileDir("e")<cr>
+
+" $q is super useful when browsing on the command line
+" it deletes everything until the last slash
+cno $q <C-\>eDeleteTillSlash()<cr>
+
+" Bash like keys for the command line
+cnoremap <C-A>		<Home>
+cnoremap <C-E>		<End>
+cnoremap <C-K>		<C-U>
+
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
+" Map ½ to something useful
+map ½ $
+cmap ½ $
+imap ½ $
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Parenthesis/bracket
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+vnoremap $1 <esc>`>a)<esc>`<i(<esc>
+vnoremap $2 <esc>`>a]<esc>`<i[<esc>
+vnoremap $3 <esc>`>a}<esc>`<i{<esc>
+vnoremap $$ <esc>`>a"<esc>`<i"<esc>
+vnoremap $q <esc>`>a'<esc>`<i'<esc>
+vnoremap $e <esc>`>a"<esc>`<i"<esc>
+
+" Map auto complete of (, ", ', [
+inoremap $1 ()<esc>i
+inoremap $2 []<esc>i
+inoremap $3 {}<esc>i
+inoremap $4 {<esc>o}<esc>O
+inoremap $q ''<esc>i
+inoremap $e ""<esc>i
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => General abbreviations
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Helper functions
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+func! DeleteTillSlash()
+    let g:cmd = getcmdline()
+
+    if has("win16") || has("win32")
+        let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\]\\).*", "\\1", "")
+    else
+        let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*", "\\1", "")
+    endif
+
+    if g:cmd == g:cmd_edited
+        if has("win16") || has("win32")
+            let g:cmd_edited = substitute(g:cmd, "\\(.*\[\\\\\]\\).*\[\\\\\]", "\\1", "")
+        else
+            let g:cmd_edited = substitute(g:cmd, "\\(.*\[/\]\\).*/", "\\1", "")
+        endif
+    endif
+
+    return g:cmd_edited
+endfunc
+
+func! CurrentFileDir(cmd)
+    return a:cmd . " " . expand("%:p:h") . "/"
+endfunc
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"filetypes.vim
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""
+" => Python section
+""""""""""""""""""""""""""""""
+let python_highlight_all = 1
+au FileType python syn keyword pythonDecorator True None False self
+
+au BufNewFile,BufRead *.jinja set syntax=htmljinja
+au BufNewFile,BufRead *.mako set ft=mako
+
+au FileType python map <buffer> F :set foldmethod=indent<cr>
+
+au FileType python inoremap <buffer> $r return
+au FileType python inoremap <buffer> $i import
+au FileType python inoremap <buffer> $p print
+au FileType python inoremap <buffer> $f # --- <esc>a
+au FileType python map <buffer> <leader>1 /class
+au FileType python map <buffer> <leader>2 /def
+au FileType python map <buffer> <leader>C ?class
+au FileType python map <buffer> <leader>D ?def
+au FileType python set cindent
+au FileType python set cinkeys-=0#
+au FileType python set indentkeys-=0#
+
+
+""""""""""""""""""""""""""""""
+" => JavaScript section
+"""""""""""""""""""""""""""""""
+au FileType javascript call JavaScriptFold()
+au FileType javascript setl fen
+au FileType javascript setl nocindent
+
+au FileType javascript imap <c-t> $log();<esc>hi
+au FileType javascript imap <c-a> alert();<esc>hi
+
+au FileType javascript inoremap <buffer> $r return
+au FileType javascript inoremap <buffer> $f // --- PH<esc>FP2xi
+
+function! JavaScriptFold()
+    setl foldmethod=syntax
+    setl foldlevelstart=1
+    syn region foldBraces start=/{/ end=/}/ transparent fold keepend extend
+
+    function! FoldText()
+        return substitute(getline(v:foldstart), '{.*', '{...}', '')
+    endfunction
+    setl foldtext=FoldText()
+endfunction
+
+
+""""""""""""""""""""""""""""""
+" => CoffeeScript section
+"""""""""""""""""""""""""""""""
+function! CoffeeScriptFold()
+    setl foldmethod=indent
+    setl foldlevelstart=1
+endfunction
+au FileType coffee call CoffeeScriptFold()
+
+au FileType gitcommit call setpos('.', [0, 1, 1, 0])
+
+
+""""""""""""""""""""""""""""""
+" => Shell section
+""""""""""""""""""""""""""""""
+if exists('$TMUX')
+    if has('nvim')
+        set termguicolors
+    else
+        set term=screen-256color
+    endif
+endif
+
+
+""""""""""""""""""""""""""""""
+" => Twig section
+""""""""""""""""""""""""""""""
+autocmd BufRead *.twig set syntax=html filetype=html
+
 
 """""""""""""""""""""""" New file title """"""""""""""""""""""""
 " 新建.c,.h,.sh,.java,.py文件，自动插入文件头
@@ -193,120 +903,3 @@ function! SetTitle()
     "新建文件后，自动定位到文件末尾
     "exec ":normal G"
 endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                        Plugin Setting                      "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" 设置tagbar
-" 设置 tagbar 子窗口的位置出现在主编辑区的左边
-let tagbar_right=1
-" " 设置显示／隐藏标签列表子窗口的快捷键。速记：identifier list by tag
-nnoremap <F2> :TagbarToggle<CR>
-" " 设置标签子窗口的宽度
-let tagbar_width=28
-" " tagbar 子窗口中不显示冗余帮助信息
-let g:tagbar_compact=1
-"设置 ctags 对哪些代码标识符生成标签
-"
-"设置ctags快捷键，快速生成ctags文件，记得在根目录下调用
-nmap cg :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-"自动找到父路径的tags文件
-set tags=tags;/
-" 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
-nmap <F1> :NERDTreeToggle<CR>
-" 圣诞节显示风格
-let NERDChristmasTree=1
-" 指定鼠标模式（1.双击打开；2.单目录双文件；3.单击打开）
-let NERDTreeMouseMode=2
-" 是否显示书签列表
-let NERDTreeShowBookmarks=0
-" 设置显示忽略文件
-let NERDTreeIgnore=['\~$', '\.pyc$', '\.swp$']
-" 设置NERDTree子窗口宽度
-let NERDTreeWinSize=28
-" 设置NERDTree子窗口位置
-let NERDTreeWinPos="left"
-" 显示隐藏文件
-let NERDTreeShowHidden=1
-" NERDTree 子窗口中不显示冗余帮助信息
-let NERDTreeMinimalUI=1
-" 删除文件时自动删除文件对应 buffer
-let NERDTreeAutoDeleteBuffer=1
-" 如果没有指定文件，则自动打开NERDTree
-autocmd vimenter * if !argc() | NERDTree | endif
-" 如果只有NERTree打开，则关闭vim
-"autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
- 
-"cpp-enhanced-highlight
-"高亮类，成员函数，标准库和模板
-let g:cpp_class_scope_highlight = 1
-let g:cpp_member_variable_highlight = 1
-let g:cpp_concepts_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
-
-"neocomplcache
-"Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-
-" Use neocomplcache.
-let g:neocomplcache_enable_at_startup = 1
-
-" Use smartcase.
-let g:neocomplcache_enable_smart_case = 1
-
-" Set minimum syntax keyword length.
-let g:neocomplcache_min_syntax_length = 3
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-
-" Enable heavy features.
-" Use camel case completion.
-let g:neocomplcache_enable_camel_case_completion = 1
-
-" Use underbar completion.
-let g:neocomplcache_enable_underbar_completion = 1
-
-" When you input 'ho-a',neocomplcache will select candidate 'a'.
-let g:neocomplcache_enable_quick_match = 1
-" Define dictionary.
-let g:neocomplcache_dictionary_filetype_lists = {
-    \ 'default' : '',
-    \ 'vimshell' : $HOME.'/.vimshell_hist',
-    \ 'scheme' : $HOME.'/.gosh_completions',
-    \ 'css' : $VIMFILES.'/dict/css.dic',
-    \ 'php' : $VIMFILES.'/dict/php.dic',
-    \ 'javascript' : $VIMFILES.'/dict/javascript.dic'
-    \ }
-" AutoComplPop like behavior.
-let g:neocomplcache_enable_auto_select = 0
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" 使用 ctrlsf.vim
-" 插件在工程内全局查找光标所在关键字，设置快捷键。快捷键速记法：search in project
-" 使用ag作为底层搜索，加快速度
-let g:ctrlsf_ackprg = 'ag'
-nnoremap <F3> :CtrlSF<CR>
-" 显示在窗口底部
-let g:ctrlsf_position = 'bottom'
-" 显示的上下文行数
-let g:ctrlsf_context = '-B 5 -A 3'
-" 按回车不会自动关闭窗口
-let g:ctrlsf_auto_close = 0
-" ctrl+f快速打开搜索
-nmap <C-F> <Plug>CtrlSFPrompt
-
-"Conque GDB
-nmap <F5> :ConqueGdb<CR>
-"待调试文件位于屏幕上方
-let g:ConqueGdb_SrcSplit = 'above'
-"保存历史
-let g:ConqueGdb_SaveHistory = 1
-"修改Conque GDB的Leader键
-let g:ConqueGdb_Leader = ','
-"总是显示颜色
-let g:ConqueTerm_Color = 2
-"程序结束运行时，关闭Conque GDB窗口
-let g:ConqueTerm_CloseOnEnd = 1
-"Conque Term配置错误时显示警告信息
-let g:ConqueTerm_StartMessages = 0
